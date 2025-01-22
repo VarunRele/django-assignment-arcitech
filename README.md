@@ -32,8 +32,8 @@
 5. To access swagger UI goto `api/` endpoint
 
 6. Versions -
-   ```
-       python = "3.10.16"
+```
+    python = "3.10.16"
     django = "^5.1.5"
     djangorestframework = "^3.15.2"
     faker = "^33.3.1"
