@@ -33,7 +33,12 @@
 
 6. Create token by submitting as `application/json` type in swagger.
 
-7. Versions -
+7. Authorization header
+```python
+    {'Authorization': f'Token {user_token}'}
+```
+
+8. Versions -
 ```
     python = "3.10.16"
     django = "^5.1.5"
