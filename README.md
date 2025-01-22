@@ -7,7 +7,7 @@
     .venv/Script/activate
 ```
 
-2. Install requirments.txt (python 3.11 is used here)
+2. Install requirments.txt
 
 ```cmd
     pip install -r requirments.txt
