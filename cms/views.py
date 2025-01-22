@@ -8,7 +8,35 @@ from .permissions import IsOwnerOrAdmin
 from rest_framework import permissions
 from .mixins import PDFFileTypeMixin
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 
+@extend_schema_view(
+    get = extend_schema(
+        description="Get all Content",
+        parameters=[
+            OpenApiParameter(
+                "title", str, required=False, 
+                description="Title of the content"
+            ),
+            OpenApiParameter(
+                "body", str, required=False, 
+                description="Body of the content"
+            ),
+            OpenApiParameter(
+                "Summary", str, required=False, 
+                description="Summary of the content"
+            ),
+            OpenApiParameter(
+                "Category", str, required=False, 
+                description="Category of the content"
+            )
+        ]
+    ),
+    post = extend_schema(
+        description="Create Content."    
+    )
+)
 class ContentListView(PDFFileTypeMixin, generics.ListCreateAPIView):
     queryset = Content.objects.all()
     serializer_class = ContentSerializer
