@@ -31,7 +31,9 @@
 
 5. To access swagger UI goto `api/` endpoint
 
-6. Versions -
+6. Create token by submitting as `application/json` type in swagger.
+
+7. Versions -
 ```
     python = "3.10.16"
     django = "^5.1.5"
