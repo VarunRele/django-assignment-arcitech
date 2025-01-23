@@ -29,7 +29,7 @@
     password = AdminPassword1
 ```
 
-5. To access swagger UI goto `api/` endpoint
+5. To access swagger UI goto `swagger/` endpoint
 
 6. Create token by submitting as `application/json` type in swagger.
 
