@@ -1,46 +1,27 @@
 from django.shortcuts import render
-from .models import Content
-from .serializers import ContentSerializer, QueryParameterSerializer
+from .models import Content, Category
+from .serializers import ContentSerializer, QueryParameterSerializer, CategorySerializer
 from rest_framework import generics
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from rest_framework import exceptions
 from .permissions import IsOwnerOrAdmin
 from rest_framework import permissions
+from rest_framework import parsers
 from .mixins import PDFFileTypeMixin
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 
-@extend_schema_view(
-    get = extend_schema(
-        description="Get all Content",
-        parameters=[
-            OpenApiParameter(
-                "title", str, required=False, 
-                description="Title of the content"
-            ),
-            OpenApiParameter(
-                "body", str, required=False, 
-                description="Body of the content"
-            ),
-            OpenApiParameter(
-                "Summary", str, required=False, 
-                description="Summary of the content"
-            ),
-            OpenApiParameter(
-                "Category", str, required=False, 
-                description="Category of the content"
-            )
-        ]
-    ),
-    post = extend_schema(
-        description="Create Content."    
-    )
-)
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from django.utils.decorators import method_decorator
+
+
 class ContentListView(PDFFileTypeMixin, generics.ListCreateAPIView):
     queryset = Content.objects.all()
     serializer_class = ContentSerializer
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [parsers.MultiPartParser]
 
     def get_queryset(self):
         user = self.request.user
@@ -70,7 +51,71 @@ class ContentListView(PDFFileTypeMixin, generics.ListCreateAPIView):
         return content.filter(query)
 
 
+    @swagger_auto_schema(
+        operation_description="List all Content",
+        manual_parameters=[
+            openapi.Parameter(
+                name='title',
+                in_=openapi.IN_QUERY,
+                description='Title of the content',
+                required=False,
+                type=openapi.TYPE_STRING
+            ),
+            openapi.Parameter(
+                name='body',
+                in_=openapi.IN_QUERY,
+                description='Body of the Content',
+                required=False,
+                type=openapi.TYPE_STRING
+            ),
+            openapi.Parameter(
+                name='summary',
+                in_=openapi.IN_QUERY,
+                description='Summary of the Content',
+                required=False,
+                type=openapi.TYPE_STRING
+            ),
+            openapi.Parameter(
+                name='category',
+                in_=openapi.IN_QUERY,
+                description='Category',
+                required=False,
+                type=openapi.TYPE_STRING
+            ),
+        ]
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+
+    @swagger_auto_schema(
+        operation_description="Create Content",
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
 class ContentRetriveUpdateDestroyView(PDFFileTypeMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Content.objects.all()
     serializer_class = ContentSerializer
     permission_classes = [IsOwnerOrAdmin]
+
+
+class CategoryListCreateView(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+    @swagger_auto_schema(
+        operation_description="Gets all category options"
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+
+    @swagger_auto_schema(
+        operation_description="Create a category"
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)

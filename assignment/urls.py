@@ -17,13 +17,29 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
-from drf_spectacular.views import SpectacularSwaggerView, SpectacularAPIView
+# from drf_spectacular.views import SpectacularSwaggerView, SpectacularAPIView
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework.authentication import TokenAuthentication
+from rest_framework import permissions
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Assignment",
+        default_version='v1',
+        description="Content uploader",
+    ),
+    public=True,
+    authentication_classes=(TokenAuthentication,),
+    permission_classes=(permissions.AllowAny,)
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cms.urls')),
     path('auth/', obtain_auth_token, name='authentication'),
     path('register/', include('user.urls')),
-    path('api/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    # path('api/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    # path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
 ]
